@@ -42,17 +42,17 @@ function App() {
       <h1>Manga Tracker</h1>
       <Auth onUserChange={setUser} />
       {user && (
-        <>
+        <div className="main-content">
           <MangaSearch onAddManga={handleAddManga} />
           <TrackingList user={user} onSelectManga={setSelectedManga} refreshTrigger={refreshTrigger} />
-          {selectedManga && (
-            <div>
-              <h2>Selected: {selectedManga.title}</h2>
-              <p>Status: {selectedManga.status}</p>
-              <p>Last Chapter: {selectedManga.lastChapter}</p>
-            </div>
-          )}
-        </>
+        </div>
+      )}
+      {selectedManga && (
+        <div className="selected-manga">
+          <h2>Selected: {selectedManga.title}</h2>
+          <p>Status: {selectedManga.status}</p>
+          <p>Last Chapter: {selectedManga.lastChapter}</p>
+        </div>
       )}
     </div>
   );

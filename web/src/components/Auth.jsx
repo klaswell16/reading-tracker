@@ -43,7 +43,7 @@ function Auth({ onUserChange }) {
 
   if (user) {
     return (
-      <div>
+      <div className="welcome-message">
         <p>Welcome, {user.email}</p>
         <button onClick={logOut}>Log Out</button>
       </div>
@@ -51,12 +51,26 @@ function Auth({ onUserChange }) {
   }
 
   return (
-    <div>
+    <div className="auth-section">
       <h2>Authentication</h2>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button onClick={signUp}>Sign Up</button>
-      <button onClick={signIn}>Sign In</button>
+      <div className="auth-form">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <div className="auth-buttons">
+          <button onClick={signUp}>Sign Up</button>
+          <button onClick={signIn}>Sign In</button>
+        </div>
+      </div>
     </div>
   );
 }

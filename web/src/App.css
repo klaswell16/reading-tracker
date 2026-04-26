@@ -1,55 +1,377 @@
+/* Dark Theme with Orange Accents */
+:root {
+  --primary-color: #ea580c; /* Orange accent */
+  --primary-dark: #c2410c; /* Darker orange */
+  --secondary-color: #1f2937; /* Dark gray */
+  --background-color: #0f172a; /* Very dark blue-gray */
+  --surface-color: #1e293b; /* Dark surface */
+  --text-color: #f1f5f9; /* Light text */
+  --text-light: #94a3b8; /* Muted light text */
+  --text-muted: #64748b; /* More muted text */
+  --success-color: #059669; /* Keep green for success */
+  --warning-color: #d97706; /* Orange warning */
+  --error-color: #dc2626; /* Keep red for error */
+  --border-color: #334155; /* Dark border */
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
 .App {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
 }
 
 .App h1 {
   text-align: center;
-  color: #333;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.App h2 {
-  color: #555;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+/* Auth Section */
+.auth-section {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.App input {
-  padding: 8px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.auth-section h2 {
+  margin-top: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  text-align: center;
 }
 
-.App button {
-  padding: 8px 16px;
-  margin: 5px;
-  background-color: #007bff;
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-form input {
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.2s;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.auth-buttons button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-buttons button:first-child {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.auth-buttons button:first-child:hover {
+  background-color: var(--primary-dark);
+}
+
+.auth-buttons button:last-child {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.auth-buttons button:last-child:hover {
+  background-color: var(--secondary-color);
+}
+
+.welcome-message {
+  text-align: center;
+  background: var(--success-color);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Main Content */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Search Section */
+.search-section {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.search-section h2 {
+  margin-top: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.search-input-group input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.search-input-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.search-input-group button {
+  padding: 12px 24px;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.App button:hover {
-  background-color: #0056b3;
+.search-input-group button:hover {
+  background-color: var(--primary-dark);
 }
 
-.App ul {
-  list-style: none;
-  padding: 0;
+.search-input-group button:disabled {
+  background-color: var(--text-light);
+  cursor: not-allowed;
 }
 
-.App li {
-  background-color: #f9f9f9;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
+/* Manga List */
+.manga-list {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.manga-list h2 {
+  margin-top: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.status-section {
+  margin-bottom: 2rem;
+}
+
+.status-section h3 {
+  color: var(--text-color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.manga-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--surface-color);
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
 }
 
-.App li:hover {
-  background-color: #e9ecef;
+.manga-item:hover {
+  background: var(--secondary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.manga-cover {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 1rem;
+  background: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+.manga-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.manga-info p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.add-button {
+  margin-left: auto;
+  padding: 8px 16px;
+  background-color: var(--success-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #059669;
+}
+
+/* Loading and Error States */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light);
+}
+
+.error {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--error-color);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-light);
+}
+
+.empty-state h3 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .App {
+    padding: 10px;
+  }
+
+  .App h1 {
+    font-size: 2rem;
+  }
+
+  .auth-section,
+  .search-section,
+  .manga-list {
+    padding: 1.5rem;
+  }
+
+  .manga-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .manga-cover {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .add-button {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Selected Manga Section */
+.selected-manga {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-top: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selected-manga h2 {
+  margin-top: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.selected-manga p {
+  margin: 0.5rem 0;
+  color: var(--text-light);
 }
