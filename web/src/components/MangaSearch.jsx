@@ -1,16 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function MangaSearch({ onAddManga }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const search = async () => {
-    if (!query.trim()) return;
+  const search = async (searchTerm) => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
-      console.log('Searching for:', query);
-      const response = await fetch(`https://api.mangadex.org/manga?limit=10&title=${encodeURIComponent(query)}&includes[]=cover_art`);
+      console.log('Searching for:', trimmed);
+      const response = await fetch(`https://api.mangadex.org/manga?limit=10&title=${encodeURIComponent(trimmed)}&includes[]=cover_art`);
       console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,6 +32,14 @@ function MangaSearch({ onAddManga }) {
     }
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      search(query);
+    }, 350);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
   return (
     <div className="search-section">
       <h2>Search Manga</h2>
@@ -34,9 +48,9 @@ function MangaSearch({ onAddManga }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter manga title"
-          onKeyPress={(e) => e.key === 'Enter' && !loading && search()}
+          onKeyPress={(e) => e.key === 'Enter' && !loading && search(query)}
         />
-        <button onClick={search} disabled={loading}>
+        <button onClick={() => search(query)} disabled={loading}>
           {loading ? 'Searching...' : 'Search'}
         </button>
       </div>
@@ -51,8 +65,10 @@ function MangaSearch({ onAddManga }) {
               ? `https://uploads.mangadex.org/covers/${manga.id}/${coverRel.attributes.fileName}.256.jpg`
               : null;
             console.log('Cover URL:', coverUrl);
-            const title = manga.attributes?.title?.en || 'No title';
-            const description = manga.attributes?.description?.en || 'No description';
+            const titleData = manga.attributes?.title || {};
+            const title = titleData.en || Object.values(titleData)[0] || 'Untitled Manga';
+            const descriptionData = manga.attributes?.description || {};
+            const description = descriptionData.en || Object.values(descriptionData)[0] || 'No description';
             return (
               <li key={manga.id} className="manga-item">
                 {coverUrl ? (

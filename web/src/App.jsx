@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Auth from './components/Auth';
 import MangaSearch from './components/MangaSearch';
@@ -10,6 +10,12 @@ function App() {
   const [user, setUser] = useState(null);
   const [selectedManga, setSelectedManga] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setSelectedManga(null);
+    }
+  }, [user]);
 
   const handleAddManga = async (manga) => {
     if (!user) {
