@@ -12,7 +12,7 @@ yarn-error.log*
 .env.production.local
 
 # Firebase config (contains sensitive API keys)
-src/firebase.js
+web/src/firebase.js
 
 # Build outputs
 dist/
