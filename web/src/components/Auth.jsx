@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
-function Auth() {
+function Auth({ onUserChange }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -10,13 +10,16 @@ function Auth() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      onUserChange(currentUser);
     });
     return unsubscribe;
-  }, []);
+  }, [onUserChange]);
 
   const signUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
+      onUserChange(userCredential.user);
     } catch (error) {
       console.error(error);
     }
@@ -24,7 +27,9 @@ function Auth() {
 
   const signIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
+      onUserChange(userCredential.user);
     } catch (error) {
       console.error(error);
     }
@@ -32,6 +37,8 @@ function Auth() {
 
   const logOut = async () => {
     await signOut(auth);
+    setUser(null);
+    onUserChange(null);
   };
 
   if (user) {

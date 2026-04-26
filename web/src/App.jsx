@@ -12,14 +12,18 @@ function App() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleAddManga = async (manga) => {
-    if (!user) return;
+    if (!user) {
+      console.error('No user logged in');
+      return;
+    }
     try {
+      console.log('Adding manga:', manga);
       const userDoc = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userDoc);
       const mangaList = userSnap.exists() ? userSnap.data().mangaList || [] : [];
       const newManga = {
         id: manga.id,
-        title: manga.attributes.title.en || 'Unknown Title',
+        title: manga.attributes?.title?.en || 'Unknown Title',
         status: 'plan_to_read',
         lastChapter: 0,
         links: {}
@@ -27,6 +31,7 @@ function App() {
       mangaList.push(newManga);
       await setDoc(userDoc, { mangaList }, { merge: true });
       setRefreshTrigger(prev => prev + 1); // Trigger refresh
+      console.log('Manga added successfully');
     } catch (error) {
       console.error('Error adding manga:', error);
     }
