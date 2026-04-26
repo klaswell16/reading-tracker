@@ -37,7 +37,9 @@ A web and mobile app for tracking manga reading progress, powered by MangaDex AP
 1. Clone this repository
 2. Navigate to the `web` directory: `cd web`
 3. Install dependencies: `npm install`
-4. Update `src/firebase.js` with your Firebase config
+4. **Set up Firebase config**:
+   - Copy `src/firebase.js.example` to `src/firebase.js`
+   - Update `src/firebase.js` with your actual Firebase config (see Firebase Setup below)
 5. Start the development server: `npm run dev`
 
 The app will be available at `http://localhost:5173/`
@@ -57,11 +59,11 @@ This app uses the MangaDex API. Please respect their usage policy:
 - Honor scanlation group removal requests
 - No ads or paid services
 
-## Technologies
+## Security Note
 
-- React (Vite)
-- Firebase (Auth, Firestore)
-- MangaDex API
+- `src/firebase.js` is gitignored to prevent committing sensitive API keys
+- Always use `src/firebase.js.example` as a template for your config
+- Never commit actual Firebase credentials to version control
 
 ## Future Features
 
