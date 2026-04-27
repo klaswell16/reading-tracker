@@ -10,12 +10,21 @@ function App() {
   const [user, setUser] = useState(null);
   const [selectedManga, setSelectedManga] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [chapterInput, setChapterInput] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!user) {
       setSelectedManga(null);
+      setShowModal(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (selectedManga) {
+      setChapterInput(selectedManga.lastChapter.toString());
+    }
+  }, [selectedManga]);
 
   const getCoverUrl = (manga) => {
     const coverRel = manga.relationships?.find((r) => r.type === 'cover_art');
@@ -47,6 +56,7 @@ function App() {
         title: title,
         status: 'plan_to_read',
         lastChapter: 0,
+        totalChapters: manga.totalChapters || null,
         coverUrl: getCoverUrl(manga),
         links: {}
       };
@@ -96,6 +106,7 @@ function App() {
       await setDoc(userDoc, { mangaList: filteredList }, { merge: true });
       setRefreshTrigger((prev) => prev + 1);
       setSelectedManga(null);
+      setShowModal(false);
     } catch (error) {
       console.error('Error deleting manga:', error);
     }
@@ -108,23 +119,59 @@ function App() {
       {user && (
         <div className="main-content">
           <MangaSearch onAddManga={handleAddManga} />
-          <TrackingList user={user} onSelectManga={setSelectedManga} refreshTrigger={refreshTrigger} />
+          <TrackingList user={user} onSelectManga={(manga) => { setSelectedManga(manga); setShowModal(true); }} refreshTrigger={refreshTrigger} />
         </div>
       )}
-      {selectedManga && (
-        <div className="selected-manga">
-          <h2>Selected: {selectedManga.title}</h2>
-          <p>Last Chapter: {selectedManga.lastChapter}</p>
-          <div className="selected-actions">
-            <label>
-              Status:
-              <select value={selectedManga.status} onChange={(e) => handleStatusChange(e.target.value)}>
-                <option value="plan_to_read">Plan to Read</option>
-                <option value="reading">Reading</option>
-                <option value="completed">Completed</option>
-              </select>
-            </label>
-            <button className="delete-button" onClick={handleDeleteManga}>Delete from List</button>
+      {showModal && selectedManga && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
+            <h2>{selectedManga.title}</h2>
+            <div className="manga-details">
+              {selectedManga.coverUrl && (
+                <img src={selectedManga.coverUrl} alt={selectedManga.title} className="manga-cover" />
+              )}
+              <div className="manga-info">
+                <p><strong>Last Chapter:</strong> {selectedManga.lastChapter}</p>
+                {selectedManga.totalChapters && (
+                  <p><strong>Total Chapters:</strong> {selectedManga.totalChapters}</p>
+                )}
+                <p><strong>Status:</strong> {selectedManga.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+              </div>
+            </div>
+            <div className="selected-actions">
+              <label>
+                Last Chapter Read:
+                <input
+                  type="number"
+                  min="0"
+                  max={selectedManga.totalChapters || undefined}
+                  value={chapterInput}
+                  onChange={(e) => setChapterInput(e.target.value)}
+                  onBlur={() => {
+                    const newChapter = parseInt(chapterInput) || 0;
+                    if (newChapter !== selectedManga.lastChapter) {
+                      updateMangaInList(selectedManga.id, { lastChapter: newChapter });
+                    }
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.target.blur();
+                    }
+                  }}
+                  className="chapter-input"
+                />
+              </label>
+              <label>
+                Status:
+                <select value={selectedManga.status} onChange={(e) => handleStatusChange(e.target.value)}>
+                  <option value="plan_to_read">Plan to Read</option>
+                  <option value="reading">Reading</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </label>
+              <button className="delete-button" onClick={handleDeleteManga}>Delete from List</button>
+            </div>
           </div>
         </div>
       )}

@@ -26,7 +26,30 @@ function MangaSearch({ onAddManga }) {
       }
       const data = await response.json();
       console.log('API response:', data);
-      setResults(data.data || []);
+
+      // Fetch chapter counts for each manga
+      const mangaWithChapters = await Promise.all(
+        (data.data || []).map(async (manga) => {
+          try {
+            const chaptersResponse = await fetch(`https://api.mangadex.org/manga/${manga.id}/aggregate`, {
+              signal,
+            });
+            if (chaptersResponse.ok) {
+              const chaptersData = await chaptersResponse.json();
+              const totalChapters = Object.values(chaptersData.volumes || {}).reduce(
+                (total, volume) => total + Object.keys(volume.chapters || {}).length,
+                0
+              );
+              return { ...manga, totalChapters };
+            }
+          } catch (error) {
+            console.warn('Failed to fetch chapters for manga:', manga.id, error);
+          }
+          return { ...manga, totalChapters: null };
+        })
+      );
+
+      setResults(mangaWithChapters);
     } catch (error) {
       if (error.name === 'AbortError') {
         return;
@@ -103,6 +126,9 @@ function MangaSearch({ onAddManga }) {
                 <div className="manga-info">
                   <h4>{title}</h4>
                   <p>{description.length > 100 ? description.substring(0, 100) + '...' : description}</p>
+                  {manga.totalChapters !== null && (
+                    <p className="chapter-count">Chapters: {manga.totalChapters}</p>
+                  )}
                 </div>
                 <button className="add-button" onClick={() => onAddManga(manga)}>Add to List</button>
               </li>

@@ -56,6 +56,9 @@ function TrackingList({ user, onSelectManga, refreshTrigger }) {
                   <div className="manga-info">
                     <h4>{manga.title}</h4>
                     <p>Last Chapter: {manga.lastChapter}</p>
+                    {manga.totalChapters && (
+                      <p className="chapter-count">Total Chapters: {manga.totalChapters}</p>
+                    )}
                   </div>
                 </li>
               ))}
