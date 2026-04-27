@@ -33,6 +33,13 @@ function App() {
       const userDoc = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userDoc);
       const mangaList = userSnap.exists() ? userSnap.data().mangaList || [] : [];
+
+      const isDuplicate = mangaList.some((item) => item.id === manga.id);
+      if (isDuplicate) {
+        console.log('Manga already in list, skipping duplicate:', manga.id);
+        return;
+      }
+
       const titleData = manga.attributes?.title || {};
       const title = titleData.en || Object.values(titleData)[0] || 'Untitled Manga';
       const newManga = {
