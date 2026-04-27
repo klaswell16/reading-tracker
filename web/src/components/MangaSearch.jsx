@@ -4,10 +4,11 @@ function MangaSearch({ onAddManga }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const minSearchLength = 2;
 
-  const search = async (searchTerm) => {
+  const search = async (searchTerm, signal) => {
     const trimmed = searchTerm.trim();
-    if (!trimmed) {
+    if (!trimmed || trimmed.length < minSearchLength) {
       setResults([]);
       setLoading(false);
       return;
@@ -16,7 +17,9 @@ function MangaSearch({ onAddManga }) {
     setLoading(true);
     try {
       console.log('Searching for:', trimmed);
-      const response = await fetch(`https://api.mangadex.org/manga?limit=10&title=${encodeURIComponent(trimmed)}&includes[]=cover_art`);
+      const response = await fetch(`https://api.mangadex.org/manga?limit=10&title=${encodeURIComponent(trimmed)}&includes[]=cover_art`, {
+        signal,
+      });
       console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,6 +28,9 @@ function MangaSearch({ onAddManga }) {
       console.log('API response:', data);
       setResults(data.data || []);
     } catch (error) {
+      if (error.name === 'AbortError') {
+        return;
+      }
       console.error('Search failed:', error);
       setResults([]);
     } finally {
@@ -33,11 +39,15 @@ function MangaSearch({ onAddManga }) {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
     const timeout = setTimeout(() => {
-      search(query);
+      search(query, controller.signal);
     }, 350);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -55,6 +65,12 @@ function MangaSearch({ onAddManga }) {
         </button>
       </div>
       {loading && <div className="loading">Searching for manga...</div>}
+      {!loading && query.trim().length > 0 && results.length === 0 && (
+        <div className="empty-state">
+          <h3>No results found</h3>
+          <p>Try a different title or check your spelling.</p>
+        </div>
+      )}
       {results.length > 0 && (
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {results.map(manga => {

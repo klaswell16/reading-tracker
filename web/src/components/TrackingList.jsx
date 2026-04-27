@@ -48,6 +48,11 @@ function TrackingList({ user, onSelectManga, refreshTrigger }) {
             <ul style={{ listStyle: 'none', padding: 0 }}>
               {grouped[status].map(manga => (
                 <li key={manga.id} className="manga-item" onClick={() => onSelectManga(manga)}>
+                  {manga.coverUrl ? (
+                    <img src={manga.coverUrl} alt={`${manga.title} cover`} className="manga-cover" onError={(e) => { e.target.style.display = 'none'; }} />
+                  ) : (
+                    <div className="manga-cover">No Image</div>
+                  )}
                   <div className="manga-info">
                     <h4>{manga.title}</h4>
                     <p>Last Chapter: {manga.lastChapter}</p>
